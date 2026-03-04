@@ -10,6 +10,8 @@ idf_component_register(
          "src/widgets.c"
          "src/dialog.c"
          "src/keyboard.c"
+         "src/nav_shell.c"
+         "src/status_bar.c"
     INCLUDE_DIRS "include" "../../main/fonts"
     REQUIRES lvgl__lvgl fmauneko__pandatouch theme main
 )
