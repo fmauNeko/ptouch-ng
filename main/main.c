@@ -94,5 +94,8 @@ void app_main(void)
         ESP_LOGI(TAG, "Internal heap free: %u KB", (unsigned)(internal_free / 1024));
         ESP_LOGI(TAG, "PSRAM free: %u KB", (unsigned)(psram_free / 1024));
         ESP_LOGI(TAG, "ptouch-ng M0 ready");
+
+        void spike_malloc_run(void);
+        spike_malloc_run();
     }
 }
