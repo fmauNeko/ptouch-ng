@@ -7,6 +7,7 @@ idf_component_register(
          "src/screen_files.c"
          "src/screen_camera.c"
          "src/screen_settings.c"
-    INCLUDE_DIRS "include"
-    REQUIRES lvgl__lvgl fmauneko__pandatouch theme
+         "src/widgets.c"
+    INCLUDE_DIRS "include" "../../main/fonts"
+    REQUIRES lvgl__lvgl fmauneko__pandatouch theme main
 )
