@@ -53,3 +53,18 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# ESP-IDF build artifacts
+build/
+sdkconfig
+sdkconfig.old
+managed_components/
+
+# Local credentials (never commit)
+main/credentials.h
+
+# OpenCode
+opencode.json
+
+# Sisyphus
+.sisyphus/
