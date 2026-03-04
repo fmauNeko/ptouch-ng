@@ -198,10 +198,6 @@ void theme_init(void)
     s_custom_theme->font_normal = &inter_regular_16;
     s_custom_theme->font_large  = &inter_regular_24;
 
-    ((lv_font_t *)&material_symbols_20)->fallback = &inter_regular_14;
-    ((lv_font_t *)&material_symbols_24)->fallback = &inter_regular_16;
-    ((lv_font_t *)&material_symbols_28)->fallback = &inter_regular_24;
-
     styles_init(p);
 
     lv_display_set_theme(disp, s_custom_theme);
