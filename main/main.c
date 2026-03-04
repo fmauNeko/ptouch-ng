@@ -109,5 +109,8 @@ void app_main(void)
 
         void spike_theme_run(void);
         spike_theme_run();
+
+        void spike_multi_tls_run(void);
+        spike_multi_tls_run();
     }
 }

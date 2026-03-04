@@ -19,12 +19,11 @@ extern const char ca_cert_pem_end[]   asm("_binary_ca_cert_pem_end");
 void spike_camera_run(void)
 {
     esp_tls_cfg_t tls_cfg = {
-        .cacert_buf       = (const unsigned char *)ca_cert_pem_start,
-        .cacert_bytes     = ca_cert_pem_end - ca_cert_pem_start,
-        .common_name      = CREDENTIALS_PRINTER_SN,
-        .skip_common_name = true,
-        .timeout_ms       = 30000,
-        .non_block        = false,
+        .cacert_buf   = (const unsigned char *)ca_cert_pem_start,
+        .cacert_bytes = ca_cert_pem_end - ca_cert_pem_start,
+        .common_name  = CREDENTIALS_PRINTER_SN,
+        .timeout_ms   = 30000,
+        .non_block    = false,
     };
 
     esp_tls_t *tls = esp_tls_init();
