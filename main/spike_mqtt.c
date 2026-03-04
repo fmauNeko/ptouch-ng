@@ -151,5 +151,5 @@ void spike_mqtt_run(void)
                  (unsigned)(delta / 1024));
     }
 
-    // Leave client running (don't destroy — keeps connection for multi-TLS spike)
+    // Leave client running — spike_multi_tls opens independent connections
 }

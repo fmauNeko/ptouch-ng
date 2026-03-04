@@ -2,7 +2,6 @@
 #include <sys/time.h>
 
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
 #include "esp_heap_caps.h"
 #include "esp_log.h"
@@ -21,7 +20,9 @@ static const char *TAG = "spike-multi-tls";
 void spike_multi_tls_run(void)
 {
     struct timeval tv = { .tv_sec = SPIKE_EPOCH_2026_03_04 };
-    settimeofday(&tv, NULL);
+    if (settimeofday(&tv, NULL) != 0) {
+        ESP_LOGW(TAG, "settimeofday failed — TLS cert validation may fail");
+    }
 
     size_t heap_initial = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
     ESP_LOGI(TAG, "Initial heap free: %u KB", (unsigned)(heap_initial / 1024));

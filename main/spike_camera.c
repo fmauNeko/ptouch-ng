@@ -186,7 +186,8 @@ void spike_camera_run(void)
         return;
     }
 
-    io.outbuf = rgb_buf;
+    io.outbuf   = rgb_buf;
+    io.out_size = (int)out_size;
     jerr = jpeg_dec_process(jpeg_dec, &io);
     int64_t t_end = esp_timer_get_time();
     int decode_ms = (int)((t_end - t_start) / 1000);
