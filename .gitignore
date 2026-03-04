@@ -66,5 +66,11 @@ main/credentials.h
 # OpenCode
 opencode.json
 
+# Clangd
+.cache/
+
+# VSCode
+.vscode/
+
 # Sisyphus
 .sisyphus/
