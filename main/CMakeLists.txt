@@ -1,5 +1,7 @@
 idf_component_register(
-    SRCS "spike_malloc.c" "main.c"
+    SRCS "spike_malloc.c"
+         "spike_mqtt.c"
+         "main.c"
     INCLUDE_DIRS "."
-    EMBED_FILES "certs/ca_cert.pem"
+    EMBED_TXTFILES "certs/ca_cert.pem"
 )

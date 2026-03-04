@@ -97,5 +97,8 @@ void app_main(void)
 
         void spike_malloc_run(void);
         spike_malloc_run();
+
+        void spike_mqtt_run(void);
+        spike_mqtt_run();
     }
 }
