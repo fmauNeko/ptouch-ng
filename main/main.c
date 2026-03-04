@@ -1,50 +1,14 @@
-#include <stdint.h>
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-
-#include "esp_err.h"
-#include "esp_event.h"
-#include "esp_heap_caps.h"
+#include "bsp/pandatouch.h"
 #include "esp_log.h"
-#include "esp_netif.h"
-#include "esp_wifi.h"
 #include "nvs_flash.h"
-
-#include "credentials.h"
+#include "ui.h"
+#include "theme.h"
 
 static const char *TAG = "ptouch-ng";
 
-static EventGroupHandle_t wifi_event_group;
-static const int WIFI_CONNECTED_BIT = BIT0;
-
-/* Forward declarations for spike functions */
-void spike_malloc_run(void);
-void spike_mqtt_run(void);
-void spike_littlefs_run(void);
-void spike_camera_run(void);
-void spike_theme_run(void);
-void spike_multi_tls_run(void);
-
-static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
-{
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-        ESP_LOGI(TAG, "WiFi STA start");
-        esp_err_t conn_ret = esp_wifi_connect();
-        if (conn_ret != ESP_OK) {
-            ESP_LOGW(TAG, "esp_wifi_connect failed: %s", esp_err_to_name(conn_ret));
-        }
-    } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        ESP_LOGW(TAG, "WiFi disconnected");
-    } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-        ESP_LOGI(TAG, "GOT_IP: " IPSTR, IP2STR(&event->ip_info.ip));
-        xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
-    }
-}
-
 void app_main(void)
 {
+    // NVS init (required by BSP internals)
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -53,70 +17,16 @@ void app_main(void)
         ESP_ERROR_CHECK(ret);
     }
 
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    // BSP display init
+    bsp_display_start();
+    bsp_display_brightness_set(80);
+    ESP_LOGI(TAG, "BSP display initialized");
 
-    wifi_event_group = xEventGroupCreate();
+    // Theme + UI init (inside display lock)
+    bsp_display_lock(0);
+    theme_init();
+    ui_init();
+    bsp_display_unlock();
 
-    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
-    if (!sta_netif) {
-        ESP_LOGE(TAG, "esp_netif_create_default_wifi_sta() returned NULL");
-        abort();
-    }
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
-                                                        ESP_EVENT_ANY_ID,
-                                                        &wifi_event_handler,
-                                                        NULL,
-                                                        NULL));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
-                                                        IP_EVENT_STA_GOT_IP,
-                                                        &wifi_event_handler,
-                                                        NULL,
-                                                        NULL));
-
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid        = CREDENTIALS_WIFI_SSID,
-            .password    = CREDENTIALS_WIFI_PASSWORD,
-            .scan_method = WIFI_ALL_CHANNEL_SCAN,
-            .sort_method = WIFI_CONNECT_AP_BY_SIGNAL,
-            .threshold = {
-                .rssi     = -80,
-                .authmode = WIFI_AUTH_WPA2_PSK,
-            },
-            .pmf_cfg = {
-                .capable  = true,
-                .required = false,
-            },
-        },
-    };
-
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    EventBits_t bits = xEventGroupWaitBits(wifi_event_group,
-                                           WIFI_CONNECTED_BIT,
-                                           pdFALSE,
-                                           pdTRUE,
-                                           portMAX_DELAY);
-    if (bits & WIFI_CONNECTED_BIT) {
-        size_t internal_free = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
-        size_t psram_free = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
-
-        ESP_LOGI(TAG, "Internal heap free: %u KB", (unsigned)(internal_free / 1024));
-        ESP_LOGI(TAG, "PSRAM free: %u KB", (unsigned)(psram_free / 1024));
-        ESP_LOGI(TAG, "ptouch-ng M0 ready");
-
-        spike_malloc_run();
-        spike_mqtt_run();
-        spike_littlefs_run();
-        spike_camera_run();
-        spike_theme_run();
-        spike_multi_tls_run();
-    }
+    ESP_LOGI(TAG, "ptouch-ng M1 ready");
 }
