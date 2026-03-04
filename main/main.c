@@ -103,5 +103,8 @@ void app_main(void)
 
         void spike_littlefs_run(void);
         spike_littlefs_run();
+
+        void spike_camera_run(void);
+        spike_camera_run();
     }
 }
