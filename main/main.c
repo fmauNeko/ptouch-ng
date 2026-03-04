@@ -100,5 +100,8 @@ void app_main(void)
 
         void spike_mqtt_run(void);
         spike_mqtt_run();
+
+        void spike_littlefs_run(void);
+        spike_littlefs_run();
     }
 }
