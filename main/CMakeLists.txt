@@ -3,6 +3,7 @@ idf_component_register(
          "spike_mqtt.c"
          "spike_littlefs.c"
          "spike_camera.c"
+         "spike_theme.c"
          "main.c"
     INCLUDE_DIRS "."
     EMBED_TXTFILES "certs/ca_cert.pem"

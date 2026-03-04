@@ -106,5 +106,8 @@ void app_main(void)
 
         void spike_camera_run(void);
         spike_camera_run();
+
+        void spike_theme_run(void);
+        spike_theme_run();
     }
 }
