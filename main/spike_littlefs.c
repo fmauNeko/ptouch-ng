@@ -8,7 +8,6 @@ static const char *TAG = "spike-littlefs";
 
 void spike_littlefs_run(void)
 {
-    // Mount LittleFS
     esp_vfs_littlefs_conf_t conf = {
         .base_path = "/data",
         .partition_label = "littlefs",
@@ -41,7 +40,10 @@ void spike_littlefs_run(void)
 
     // Test 2: Partition info
     size_t total = 0, used = 0;
-    esp_littlefs_info("littlefs", &total, &used);
+    esp_err_t info_ret = esp_littlefs_info("littlefs", &total, &used);
+    if (info_ret != ESP_OK) {
+        ESP_LOGW(TAG, "esp_littlefs_info failed: %s", esp_err_to_name(info_ret));
+    }
     ESP_LOGI(TAG, "PARTITION: total=%uKB, used=%uKB, free=%uKB",
              (unsigned)(total / 1024), (unsigned)(used / 1024),
              (unsigned)((total - used) / 1024));
@@ -64,5 +66,8 @@ void spike_littlefs_run(void)
     ESP_LOGI(TAG, "SPIKE_RESULT: PASS — LittleFS write/read OK, persistence verified, partition %uKB free",
              (unsigned)((total - used) / 1024));
 
-    esp_vfs_littlefs_unregister("littlefs");
+    esp_err_t unreg_ret = esp_vfs_littlefs_unregister("littlefs");
+    if (unreg_ret != ESP_OK) {
+        ESP_LOGW(TAG, "esp_vfs_littlefs_unregister failed: %s", esp_err_to_name(unreg_ret));
+    }
 }

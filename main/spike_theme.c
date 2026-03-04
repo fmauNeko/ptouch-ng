@@ -36,7 +36,7 @@ void spike_theme_run(void)
 
     lv_display_t *display = lv_display_get_default();
     if (!display) {
-        ESP_LOGE(TAG, "SPIKE_RESULT: FAIL -- lv_display_get_default() returned NULL");
+        ESP_LOGE(TAG, "SPIKE_RESULT: FAIL — lv_display_get_default() returned NULL");
         return;
     }
 
@@ -59,7 +59,7 @@ void spike_theme_run(void)
     lv_slider_set_value(slider, 50, LV_ANIM_OFF);
 
     lv_obj_t *label = lv_label_create(scr);
-    lv_label_set_text(label, "Theme Test -- ptouch-ng");
+    lv_label_set_text(label, "Theme Test — ptouch-ng");
     lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 
     lv_obj_t *list = lv_list_create(scr);
@@ -104,9 +104,9 @@ void spike_theme_run(void)
 
         vTaskDelay(pdMS_TO_TICKS(100));
 
-        ESP_LOGI(TAG, "THEME_SWITCH: %s->%s -- result=OK, fps_after=0",
+        ESP_LOGI(TAG, "THEME_SWITCH: %s->%s — result=OK, fps_after=0",
                  switches[i].from, switches[i].to);
     }
 
-    ESP_LOGI(TAG, "SPIKE_RESULT: PASS -- 4 theme switches, no asserts, no corruption");
+    ESP_LOGI(TAG, "SPIKE_RESULT: PASS — 4 theme switches, no asserts, no corruption");
 }

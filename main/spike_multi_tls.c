@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
 
@@ -12,14 +11,16 @@
 
 static const char *TAG = "spike-multi-tls";
 
-#define MAX_CONNS       5
-#define TARGET_HOST     "homeassistant.dissidence.ovh"
-#define TARGET_PORT     443
-#define CONN_TIMEOUT_MS 20000
+#define MAX_CONNS                   5
+#define TARGET_HOST                 "homeassistant.dissidence.ovh"
+#define TARGET_PORT                 443
+#define CONN_TIMEOUT_MS             20000
+#define SPIKE_EPOCH_2026_03_04      1772582400L  /* 2026-03-04 00:00:00 UTC */
+#define HEAP_NOTE_THRESHOLD_BYTES   (50 * 1024)
 
 void spike_multi_tls_run(void)
 {
-    struct timeval tv = { .tv_sec = 1772582400L }; /* 2026-03-04 00:00:00 UTC */
+    struct timeval tv = { .tv_sec = SPIKE_EPOCH_2026_03_04 };
     settimeofday(&tv, NULL);
 
     size_t heap_initial = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
@@ -88,7 +89,7 @@ void spike_multi_tls_run(void)
              (unsigned)(extrap_10 / 1024));
     ESP_LOGI(TAG, "HEAP_REMAINING: %uKB free", (unsigned)(heap_after_last / 1024));
 
-    if (per_conn > 50 * 1024) {
+    if (per_conn > HEAP_NOTE_THRESHOLD_BYTES) {
         ESP_LOGW(TAG, "HEAP_NOTE: Consider reducing CONFIG_MBEDTLS_SSL_IN_CONTENT_LEN and "
                       "CONFIG_MBEDTLS_SSL_OUT_CONTENT_LEN from 16384 to 4096 (saves ~24KB/conn)");
     }

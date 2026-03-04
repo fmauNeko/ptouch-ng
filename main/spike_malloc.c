@@ -61,7 +61,11 @@ void spike_malloc_run(void)
     ESP_LOGI(TAG, "Internal free before bsp_display_start: %u KB",
              (unsigned)(internal_before / 1024));
 
-    bsp_display_start();
+    lv_display_t *disp = bsp_display_start();
+    if (!disp) {
+        ESP_LOGE(TAG, "SPIKE_RESULT: FAIL — bsp_display_start() returned NULL");
+        return;
+    }
     ESP_ERROR_CHECK(bsp_display_brightness_set(80));
 
     heap_caps_get_info(&info, MALLOC_CAP_SPIRAM);

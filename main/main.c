@@ -1,4 +1,3 @@
-#include <string.h>
 #include <stdint.h>
 
 #include "freertos/FreeRTOS.h"
@@ -19,11 +18,22 @@ static const char *TAG = "ptouch-ng";
 static EventGroupHandle_t wifi_event_group;
 static const int WIFI_CONNECTED_BIT = BIT0;
 
+/* Forward declarations for spike functions */
+void spike_malloc_run(void);
+void spike_mqtt_run(void);
+void spike_littlefs_run(void);
+void spike_camera_run(void);
+void spike_theme_run(void);
+void spike_multi_tls_run(void);
+
 static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         ESP_LOGI(TAG, "WiFi STA start");
-        esp_wifi_connect();
+        esp_err_t conn_ret = esp_wifi_connect();
+        if (conn_ret != ESP_OK) {
+            ESP_LOGW(TAG, "esp_wifi_connect failed: %s", esp_err_to_name(conn_ret));
+        }
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         ESP_LOGW(TAG, "WiFi disconnected");
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
@@ -48,7 +58,11 @@ void app_main(void)
 
     wifi_event_group = xEventGroupCreate();
 
-    esp_netif_create_default_wifi_sta();
+    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
+    if (!sta_netif) {
+        ESP_LOGE(TAG, "esp_netif_create_default_wifi_sta() returned NULL");
+        abort();
+    }
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
@@ -66,13 +80,16 @@ void app_main(void)
 
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = CREDENTIALS_WIFI_SSID,
-            .password = CREDENTIALS_WIFI_PASSWORD,
+            .ssid        = CREDENTIALS_WIFI_SSID,
+            .password    = CREDENTIALS_WIFI_PASSWORD,
+            .scan_method = WIFI_ALL_CHANNEL_SCAN,
+            .sort_method = WIFI_CONNECT_AP_BY_SIGNAL,
             .threshold = {
+                .rssi     = -80,
                 .authmode = WIFI_AUTH_WPA2_PSK,
             },
             .pmf_cfg = {
-                .capable = true,
+                .capable  = true,
                 .required = false,
             },
         },
@@ -95,22 +112,11 @@ void app_main(void)
         ESP_LOGI(TAG, "PSRAM free: %u KB", (unsigned)(psram_free / 1024));
         ESP_LOGI(TAG, "ptouch-ng M0 ready");
 
-        void spike_malloc_run(void);
         spike_malloc_run();
-
-        void spike_mqtt_run(void);
         spike_mqtt_run();
-
-        void spike_littlefs_run(void);
         spike_littlefs_run();
-
-        void spike_camera_run(void);
         spike_camera_run();
-
-        void spike_theme_run(void);
         spike_theme_run();
-
-        void spike_multi_tls_run(void);
         spike_multi_tls_run();
     }
 }

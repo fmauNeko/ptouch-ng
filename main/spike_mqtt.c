@@ -1,5 +1,4 @@
-#include <string.h>
-#include <stdint.h>
+#include <stdio.h>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -33,7 +32,10 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
 
         char sub_topic[64];
         snprintf(sub_topic, sizeof(sub_topic), "device/%s/report", CREDENTIALS_PRINTER_SN);
-        esp_mqtt_client_subscribe(event->client, sub_topic, 1);
+        int msg_id = esp_mqtt_client_subscribe(event->client, sub_topic, 1);
+        if (msg_id < 0) {
+            ESP_LOGW(TAG, "esp_mqtt_client_subscribe failed: %d", msg_id);
+        }
         break;
 
     case MQTT_EVENT_SUBSCRIBED:
@@ -42,7 +44,10 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base,
         snprintf(pub_topic, sizeof(pub_topic), "device/%s/request", CREDENTIALS_PRINTER_SN);
         const char *pushall = "{\"pushing\":{\"sequence_id\":\"1\",\"command\":\"pushall\","
                               "\"version\":1,\"push_target\":1}}";
-        esp_mqtt_client_publish(event->client, pub_topic, pushall, 0, 0, 0);
+        int pub_msg_id = esp_mqtt_client_publish(event->client, pub_topic, pushall, 0, 0, 0);
+        if (pub_msg_id < 0) {
+            ESP_LOGW(TAG, "esp_mqtt_client_publish failed: %d", pub_msg_id);
+        }
         break;
 
     case MQTT_EVENT_DATA:
@@ -96,8 +101,20 @@ void spike_mqtt_run(void)
     };
 
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
-    esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
-    esp_mqtt_client_start(client);
+    if (!client) {
+        ESP_LOGE(TAG, "SPIKE_RESULT: FAIL — esp_mqtt_client_init() returned NULL (OOM)");
+        return;
+    }
+
+    esp_err_t err = esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "esp_mqtt_client_register_event failed: %s", esp_err_to_name(err));
+    }
+
+    err = esp_mqtt_client_start(client);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "esp_mqtt_client_start failed: %s", esp_err_to_name(err));
+    }
 
     EventBits_t bits = xEventGroupWaitBits(mqtt_event_group,
                                            MQTT_CONNECTED_BIT,
