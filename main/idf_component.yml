@@ -1,6 +1,6 @@
 dependencies:
   idf: ">=6.0.0-beta2"
-  fmauneko/pandatouch: "^0.4"
+  fmauneko/pandatouch: "^0.4.1"
   espressif/cjson: "*"
   espressif/mqtt: "*"
   joltwallet/littlefs: "^1.14"

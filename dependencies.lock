@@ -112,8 +112,12 @@ dependencies:
     - esp32h4
     version: 1.1.4
   fmauneko/pandatouch:
-    component_hash: 67b6f187806b95bea3dcfd2946bc55aeedeba6a4d212d1ad15b6936552eb6128
+    component_hash: b0f4304a7d8f063a08c6019bea334980ac6e86336b75ac611dad7152fb65c7b9
     dependencies:
+    - name: espressif/esp_lcd_touch
+      registry_url: https://components.espressif.com
+      require: public
+      version: ^1
     - name: espressif/esp_lcd_touch_gt911
       registry_url: https://components.espressif.com
       require: private
@@ -134,7 +138,7 @@ dependencies:
       type: service
     targets:
     - esp32s3
-    version: 0.4.0
+    version: 0.4.1
   idf:
     source:
       type: idf
@@ -163,6 +167,6 @@ direct_dependencies:
 - fmauneko/pandatouch
 - idf
 - joltwallet/littlefs
-manifest_hash: 4cb22006fa03ebd6dd1a733b48a97ee5eda326124aa14177338ed8c2c18ff6b2
+manifest_hash: f4c29bb967def6fd52f36a2780b9ec70a477924fec8c9f6c5cf37e6464a43ac3
 target: esp32s3
 version: 2.0.0
