@@ -19,6 +19,7 @@
 
 #define ICON_PRINT              "\xEE\xA2\xAD"
 #define ICON_THERMOSTAT         "\xEF\x81\xB6"
+#define ICON_TUNE               "\xEE\x90\xA9"
 #define ICON_MODE_FAN           "\xEE\x80\x9C"
 #define ICON_SPEED              "\xEE\xA7\xA4"
 #define ICON_BRIGHTNESS_6       "\xEE\x8E\xAD"
@@ -55,3 +56,4 @@
 LV_FONT_DECLARE(material_symbols_20);
 LV_FONT_DECLARE(material_symbols_24);
 LV_FONT_DECLARE(material_symbols_28);
+LV_FONT_DECLARE(material_symbols_40);

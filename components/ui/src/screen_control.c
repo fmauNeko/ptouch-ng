@@ -10,7 +10,7 @@ static lv_obj_t *create(lv_obj_t *parent)
     lv_obj_set_style_pad_all(screen, 0, 0);
 
     lv_obj_t *label = lv_label_create(screen);
-    lv_label_set_text(label, i18n_get(STR_TAB_FILAMENT));
+    lv_label_set_text(label, i18n_get(STR_TAB_CONTROL));
     lv_obj_center(label);
 
     return screen;
@@ -19,7 +19,7 @@ static lv_obj_t *create(lv_obj_t *parent)
 static void on_show(void) { }
 static void on_hide(void) { }
 
-const screen_handler_t screen_filament_handler = {
+const screen_handler_t screen_control_handler = {
     .create  = create,
     .on_show = on_show,
     .on_hide = on_hide,

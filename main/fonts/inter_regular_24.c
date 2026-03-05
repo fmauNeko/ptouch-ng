@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Size: 24 px
  * Bpp: 4
- * Opts: --font D:/Code/ptouch-ng/.sisyphus/fonts/Inter-Regular.ttf --size 24 --bpp 4 --format lvgl --range 0x20-0xFF --no-compress -o D:/Code/ptouch-ng/main/fonts/inter_regular_24.c
+ * Opts: --font D:\Code\ptouch-ng\.temp\fonts\Inter-Regular.ttf --size 24 --bpp 4 --format lvgl --range 0x20-0xFF --no-compress --lv-include lvgl.h --output D:\Code\ptouch-ng\main\fonts\inter_regular_24.c
  ******************************************************************************/
 
 #ifdef LV_LVGL_H_INCLUDE_SIMPLE

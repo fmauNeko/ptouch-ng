@@ -4,7 +4,7 @@
 
 typedef enum {
     SCREEN_HOME = 0,
-    SCREEN_FILAMENT,
+    SCREEN_CONTROL,
     SCREEN_FILES,
     SCREEN_CAMERA,
     SCREEN_SETTINGS,
@@ -21,3 +21,4 @@ void screen_manager_init(lv_obj_t *content_container);
 void screen_manager_register(screen_id_t id, const screen_handler_t *handler);
 void screen_manager_show(screen_id_t id);
 screen_id_t screen_manager_get_active(void);
+void screen_manager_reset(void);

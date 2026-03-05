@@ -71,3 +71,7 @@ opencode.json
 
 # Sisyphus
 .sisyphus/
+.temp/
+
+# Python
+__pycache__/

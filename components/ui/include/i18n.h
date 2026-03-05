@@ -2,7 +2,7 @@
 
 typedef enum {
     STR_TAB_HOME,
-    STR_TAB_FILAMENT,
+    STR_TAB_CONTROL,
     STR_TAB_FILES,
     STR_TAB_CAMERA,
     STR_TAB_SETTINGS,

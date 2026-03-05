@@ -13,6 +13,7 @@ idf_component_register(
          "fonts/material_symbols_20.c"
          "fonts/material_symbols_24.c"
          "fonts/material_symbols_28.c"
+         "fonts/material_symbols_40.c"
     INCLUDE_DIRS "." "fonts"
     REQUIRES ui theme
     PRIV_REQUIRES nvs_flash

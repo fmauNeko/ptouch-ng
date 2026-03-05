@@ -179,7 +179,7 @@ void theme_init(void)
 
     lv_display_t *disp = lv_display_get_default();
 
-    s_active_config = palettes_get_builtin(0);
+    s_active_config = palettes_get_builtin(1);
     const theme_palette_t *p = s_active_config->palette;
 
     lv_theme_t *default_th = lv_theme_default_init(

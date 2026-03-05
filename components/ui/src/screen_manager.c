@@ -65,3 +65,14 @@ screen_id_t screen_manager_get_active(void)
 {
     return s_active;
 }
+
+void screen_manager_reset(void)
+{
+    for (int i = 0; i < SCREEN__COUNT; i++) {
+        s_screens[i] = NULL;
+    }
+    s_container = NULL;
+    s_initialized = false;
+    s_active = SCREEN_HOME;
+    ESP_LOGI(TAG, "screen manager reset");
+}

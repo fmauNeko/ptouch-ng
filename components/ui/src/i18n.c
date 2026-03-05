@@ -5,7 +5,7 @@ static const char *TAG = "i18n";
 
 static const char *strings_en[STR__COUNT] = {
     [STR_TAB_HOME]                  = "Home",
-    [STR_TAB_FILAMENT]              = "Filament",
+    [STR_TAB_CONTROL]               = "Control",
     [STR_TAB_FILES]                 = "Files",
     [STR_TAB_CAMERA]                = "Camera",
     [STR_TAB_SETTINGS]              = "Settings",

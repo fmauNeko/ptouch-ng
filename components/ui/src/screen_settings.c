@@ -1,4 +1,5 @@
 #include "screen_manager.h"
+#include "ui.h"
 #include "i18n.h"
 #include "theme.h"
 #include "widgets.h"
@@ -15,7 +16,7 @@ static void theme_toggle_cb(lv_event_t *e)
     } else {
         theme_set_active("Catppuccin Latte");
     }
-    ui_toast_show(i18n_get(STR_TOAST_THEME_CHANGED), 2000);
+    ui_rebuild();
     ESP_LOGI(TAG, "theme toggled");
 }
 
